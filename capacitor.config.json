@@ -1,0 +1,19 @@
+{
+  "appId": "com.michel.garlandat.senatparis",
+  "appName": "Sénat Paris",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "always"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    },
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}
