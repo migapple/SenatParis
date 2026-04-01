@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="fr" style="background:#050D1A">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Présidents du Sénat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"></noscript>
+<style>
+:root {
+  --gold:#C9993A; --gold-light:#E8C76A; --gold-pale:#F5E8C0;
+  --ink:#050D1A; --parchment:#E8F0FA;
+  --r3:#8B5A10; --ve:#4B1A7A;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Cormorant Garamond',Georgia,serif;background:var(--ink);color:var(--parchment);min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:linear-gradient(180deg,#020810 0%,#050D1A 100%);
+  border-bottom:1px solid rgba(201,153,58,0.3);
+  padding:calc(var(--safe-top) + 10px) 16px 12px;
+}
+.header-top{display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:6px;}
+header h1{
+  font-family:'IM Fell English',serif;font-size:22px;letter-spacing:0.04em;
+  background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold) 40%,var(--gold-pale) 70%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;text-align:center;
+}
+.settings-btn{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  background:none;border:none;font-size:20px;cursor:pointer;padding:6px;
+  color:rgba(201,153,58,0.7);
+}
+.subtitle{text-align:center;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(201,153,58,0.45);margin-bottom:10px;font-style:italic;}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;margin-bottom:8px;}
+.search-wrap input{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(201,153,58,0.25);border-radius:8px;
+  padding:8px 32px 8px 34px;color:var(--parchment);font-family:'Cormorant Garamond',serif;font-size:15px;outline:none;transition:border-color .2s;
+}
+.search-wrap input::placeholder{color:rgba(232,240,250,0.3);}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0.4;}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(232,240,250,0.5);font-size:18px;cursor:pointer;display:none;padding:4px;}
+
+/* ── FILTERS ── */
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-btn{
+  flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid rgba(201,153,58,0.25);
+  background:rgba(255,255,255,0.03);color:rgba(232,240,250,0.65);font-family:'Cormorant Garamond',serif;
+  font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.filter-btn.active{color:#fff;border-color:transparent;}
+
+/* ── CONTENT ── */
+.content{padding:0 16px;}
+.counter{font-size:12px;color:rgba(201,153,58,0.5);text-align:right;padding:8px 0 4px;font-style:italic;}
+
+/* ── CARDS ── */
+.cards{padding:0 0 calc(var(--safe-bot) + 20px);}
+.card{
+  display:flex;gap:12px;padding:12px;margin-bottom:8px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(201,153,58,0.12);border-radius:10px;
+  cursor:pointer;transition:background .15s;
+}
+.card:active{background:rgba(201,153,58,0.08);}
+.card-img{
+  width:58px;height:70px;border-radius:6px;flex-shrink:0;
+  background:rgba(201,153,58,0.08);object-fit:cover;object-position:top center;
+}
+.card-img.loading{animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.7}}
+.card-body{flex:1;min-width:0;}
+.card-name{font-family:'IM Fell English',serif;font-size:15px;color:var(--gold-light);margin-bottom:2px;line-height:1.2;}
+.card-dates{font-size:12px;color:rgba(232,240,250,0.55);margin-bottom:4px;}
+.card-party{font-size:11.5px;color:rgba(232,240,250,0.4);font-style:italic;}
+.card-badges{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.badge-rep{font-size:10px;padding:2px 7px;border-radius:10px;font-style:italic;color:#fff;opacity:0.85;}
+.badge-actuel{font-size:10px;padding:2px 7px;border-radius:10px;background:#1A6B30;color:#7FD49B;}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;background:rgba(5,13,26,0.85);
+  display:none;align-items:flex-end;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex;}
+.modal-sheet{
+  width:100%;max-height:88vh;overflow-y:auto;
+  background:#080F1E;border-top:1px solid rgba(201,153,58,0.3);
+  border-radius:16px 16px 0 0;padding:0 0 calc(var(--safe-bot) + 20px);
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:rgba(201,153,58,0.3);border-radius:2px;margin:12px auto 0;cursor:pointer;padding:8px 40px;}
+.modal-header{padding:12px 20px 0;}
+.modal-portrait{
+  width:90px;height:110px;border-radius:8px;float:right;margin:0 0 12px 14px;
+  object-fit:cover;object-position:top;background:rgba(201,153,58,0.08);
+}
+.modal-portrait.loading{animation:pulse 1.5s ease-in-out infinite;}
+.modal-name{font-family:'IM Fell English',serif;font-size:20px;color:var(--gold-light);line-height:1.2;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:rgba(232,240,250,0.55);margin-bottom:10px;}
+.modal-body{padding:0 20px;clear:both;}
+.modal-section{margin-bottom:12px;}
+.modal-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,153,58,0.5);margin-bottom:3px;}
+.modal-text{font-size:14.5px;color:rgba(232,240,250,0.8);line-height:1.55;}
+.modal-events{font-size:13px;color:rgba(201,153,58,0.75);line-height:1.8;}
+.modal-close{
+  display:block;width:calc(100% - 40px);margin:16px 20px 0;padding:12px;
+  background:rgba(201,153,58,0.12);border:1px solid rgba(201,153,58,0.25);border-radius:10px;
+  color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:15px;cursor:pointer;letter-spacing:0.05em;
+}
+
+/* ── SETTINGS ── */
+.settings-overlay{
+  position:fixed;inset:0;z-index:300;background:rgba(5,13,26,0.85);
+  display:none;align-items:flex-end;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.settings-overlay.open{display:flex;}
+.settings-sheet{
+  width:100%;max-height:92vh;overflow-y:auto;
+  background:#080F1E;border-top:1px solid rgba(201,153,58,0.3);
+  border-radius:16px 16px 0 0;padding-bottom:calc(var(--safe-bot) + 20px);
+  animation:slideUp .25s ease;
+}
+.settings-handle{width:40px;height:4px;background:rgba(201,153,58,0.28);border-radius:2px;margin:12px auto 20px;cursor:pointer;}
+.settings-title{font-family:'IM Fell English',serif;font-size:18px;color:var(--gold);text-align:center;padding:0 20px 16px;border-bottom:1px solid rgba(201,153,58,0.15);}
+.settings-section{padding:16px 20px 0;}
+.settings-section-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,153,58,0.5);margin-bottom:10px;}
+.app-row{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;}
+.app-row-icon{width:36px;height:36px;border-radius:8px;background:rgba(201,153,58,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.app-row-info{flex:1;}
+.app-row-name{font-size:14px;color:var(--parchment);}
+.app-row-desc{font-size:12px;color:rgba(232,240,250,0.4);font-style:italic;}
+.app-row-arrow{color:rgba(201,153,58,0.4);font-size:16px;}
+.settings-divider{height:1px;background:rgba(201,153,58,0.08);margin-left:48px;}
+.settings-copyright{text-align:center;padding:24px 20px 0;font-size:12px;color:rgba(232,240,250,0.3);line-height:1.7;}
+.settings-claude-badge{margin-top:12px;font-size:11px;color:rgba(201,153,58,0.3);letter-spacing:0.1em;}
+.settings-close{
+  display:block;width:calc(100% - 40px);margin:16px 20px 0;padding:12px;
+  background:rgba(201,153,58,0.1);border:1px solid rgba(201,153,58,0.2);border-radius:10px;
+  color:rgba(201,153,58,0.7);font-family:'Cormorant Garamond',serif;font-size:15px;cursor:pointer;
+}
+
+/* ── TAB BAR ── */
+.tab-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:150;
+  background:linear-gradient(0deg,#020810 0%,#050D1A 100%);
+  border-top:1px solid rgba(201,153,58,0.2);
+  display:flex;padding-bottom:var(--safe-bot);
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 0 8px;background:none;border:none;cursor:pointer;
+  color:rgba(232,240,250,0.35);transition:color .2s;
+}
+.tab-btn.active{color:var(--gold);}
+.tab-icon{font-size:20px;line-height:1;}
+.tab-label{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:0.08em;}
+
+/* ── QUIZ VIEW ── */
+#quizView{display:none;padding:16px 16px calc(var(--safe-bot) + 80px);}
+
+.quiz-home{text-align:center;padding:20px 0;}
+.quiz-home-icon{font-size:52px;margin-bottom:12px;}
+.quiz-home-title{font-family:'IM Fell English',serif;font-size:26px;color:var(--gold-light);margin-bottom:8px;}
+.quiz-home-sub{font-size:14px;color:rgba(232,240,250,0.5);margin-bottom:28px;line-height:1.5;}
+.quiz-modes{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.quiz-mode-btn{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(201,153,58,0.2);border-radius:12px;
+  cursor:pointer;text-align:left;transition:background .15s;
+}
+.quiz-mode-btn:active{background:rgba(201,153,58,0.1);}
+.quiz-mode-icon{font-size:26px;flex-shrink:0;}
+.quiz-mode-info{}
+.quiz-mode-name{font-family:'IM Fell English',serif;font-size:16px;color:var(--gold-light);margin-bottom:2px;}
+.quiz-mode-desc{font-size:12px;color:rgba(232,240,250,0.4);font-style:italic;}
+
+.quiz-score-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(201,153,58,0.15);border-radius:10px;
+  padding:10px 14px;margin-bottom:16px;
+}
+.quiz-score-label{font-size:12px;color:rgba(232,240,250,0.4);}
+.quiz-score-val{font-family:'IM Fell English',serif;font-size:18px;color:var(--gold);}
+.quiz-progress{height:3px;background:rgba(201,153,58,0.15);border-radius:2px;margin-bottom:18px;}
+.quiz-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s;}
+
+.quiz-q-num{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(201,153,58,0.45);margin-bottom:8px;}
+.quiz-question{
+  font-family:'IM Fell English',serif;font-size:19px;color:var(--parchment);
+  line-height:1.4;margin-bottom:20px;
+}
+.quiz-portrait-wrap{text-align:center;margin-bottom:16px;}
+.quiz-portrait{width:80px;height:96px;border-radius:8px;object-fit:cover;object-position:top;background:rgba(201,153,58,0.08);}
+.quiz-portrait.loading{animation:pulse 1.5s ease-in-out infinite;}
+
+.quiz-answers{display:flex;flex-direction:column;gap:9px;}
+.quiz-ans-btn{
+  width:100%;padding:13px 16px;text-align:left;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(201,153,58,0.18);border-radius:10px;
+  color:var(--parchment);font-family:'Cormorant Garamond',serif;font-size:15px;cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.quiz-ans-btn.correct{background:rgba(30,120,60,0.35);border-color:#3DAA6A;color:#7FD49B;}
+.quiz-ans-btn.wrong{background:rgba(140,30,30,0.35);border-color:#AA3D3D;color:#F09090;}
+.quiz-ans-btn.reveal{background:rgba(30,120,60,0.15);border-color:#3DAA6A55;}
+.quiz-ans-btn:disabled{cursor:default;}
+
+.quiz-feedback{
+  margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.5;display:none;
+}
+.quiz-feedback.correct{background:rgba(30,120,60,0.2);border:1px solid #3DAA6A55;color:#7FD49B;}
+.quiz-feedback.wrong{background:rgba(140,30,30,0.2);border:1px solid #AA3D3D55;color:#F09090;}
+.quiz-next-btn{
+  display:none;width:100%;margin-top:12px;padding:13px;
+  background:rgba(201,153,58,0.15);border:1px solid rgba(201,153,58,0.35);border-radius:10px;
+  color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:15px;cursor:pointer;letter-spacing:0.05em;
+}
+
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result-icon{font-size:56px;margin-bottom:12px;}
+.quiz-result-title{font-family:'IM Fell English',serif;font-size:26px;color:var(--gold-light);margin-bottom:8px;}
+.quiz-result-score{font-size:48px;font-family:'IM Fell English',serif;color:var(--gold);margin:12px 0;}
+.quiz-result-sub{font-size:14px;color:rgba(232,240,250,0.5);margin-bottom:28px;}
+.quiz-restart-btn{
+  width:100%;padding:14px;
+  background:rgba(201,153,58,0.15);border:1px solid rgba(201,153,58,0.35);border-radius:10px;
+  color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:16px;cursor:pointer;letter-spacing:0.05em;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Présidents du Sénat</h1>
+    <button class="settings-btn" id="settingsBtn">⚙</button>
+  </div>
+  <div class="subtitle">De 1876 à nos jours</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Rechercher un président…">
+    <button class="search-clear" id="searchClear">✕</button>
+  </div>
+  <div class="filters" id="filtersContainer"></div>
+</header>
+
+<div class="content" id="listeView" style="padding-bottom:80px;">
+  <div class="counter" id="counter"></div>
+  <div class="cards" id="cardsList"></div>
+</div>
+
+<!-- QUIZ VIEW -->
+<div id="quizView" style="display:none;padding:16px 16px calc(var(--safe-bot) + 80px);">
+  <div id="quizHome">
+    <div class="quiz-home">
+      <div class="quiz-home-icon">🏛</div>
+      <div class="quiz-home-title">Quiz du Sénat</div>
+      <div class="quiz-home-sub">Testez vos connaissances sur les présidents de la Haute Assemblée</div>
+    </div>
+    <div class="quiz-modes">
+      <button class="quiz-mode-btn" onclick="startQuiz('all')">
+        <div class="quiz-mode-icon">📜</div>
+        <div class="quiz-mode-info">
+          <div class="quiz-mode-name">Quiz complet</div>
+          <div class="quiz-mode-desc">20 questions sur tous les présidents</div>
+        </div>
+      </button>
+      <button class="quiz-mode-btn" onclick="startQuiz('r3')">
+        <div class="quiz-mode-icon">⚖️</div>
+        <div class="quiz-mode-info">
+          <div class="quiz-mode-name">IIIe République</div>
+          <div class="quiz-mode-desc">Focus sur 1876–1944</div>
+        </div>
+      </button>
+      <button class="quiz-mode-btn" onclick="startQuiz('ve')">
+        <div class="quiz-mode-icon">🗳</div>
+        <div class="quiz-mode-info">
+          <div class="quiz-mode-name">Ve République</div>
+          <div class="quiz-mode-desc">Focus sur 1947 à nos jours</div>
+        </div>
+      </button>
+    </div>
+  </div>
+  <div id="quizQuestion" style="display:none;">
+    <div class="quiz-score-bar">
+      <span class="quiz-score-label">Score</span>
+      <span class="quiz-score-val" id="qScore">0 / 0</span>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div class="quiz-q-num" id="qNum"></div>
+    <div class="quiz-portrait-wrap" id="qPortraitWrap" style="display:none;">
+      <img class="quiz-portrait loading" id="qPortrait" src="" alt="">
+    </div>
+    <div class="quiz-question" id="qText"></div>
+    <div class="quiz-answers" id="qAnswers"></div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <button class="quiz-next-btn" id="qNext" onclick="nextQuestion()">Question suivante →</button>
+  </div>
+  <div id="quizResult" style="display:none;">
+    <div class="quiz-result">
+      <div class="quiz-result-icon" id="rIcon"></div>
+      <div class="quiz-result-title" id="rTitle"></div>
+      <div class="quiz-result-score" id="rScore"></div>
+      <div class="quiz-result-sub" id="rSub"></div>
+      <button class="quiz-restart-btn" onclick="showQuizHome()">↩ Rejouer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tabListe" onclick="switchTab('liste')">
+    <span class="tab-icon">📋</span><span class="tab-label">Liste</span>
+  </button>
+  <button class="tab-btn" id="tabQuiz" onclick="switchTab('quiz')">
+    <span class="tab-icon">🏆</span><span class="tab-label">Quiz</span>
+  </button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle" id="modalHandle"></div>
+    <div class="modal-header">
+      <img class="modal-portrait loading" id="modalPortrait" src="" alt="">
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-sub" id="modalSub"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-label">Mandat</div>
+        <div class="modal-text" id="modalMandat"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Parti politique</div>
+        <div class="modal-text" id="modalParti"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Biographie</div>
+        <div class="modal-text" id="modalBio"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Faits marquants</div>
+        <div class="modal-events" id="modalEvents"></div>
+      </div>
+    </div>
+    <button class="modal-close" id="modalClose">Fermer</button>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-sheet">
+    <div class="settings-handle" onclick="closeSettings()"></div>
+    <div class="settings-title">À propos</div>
+    <div id="settingsContent"></div>
+    <div class="settings-copyright">
+      <p><strong>© 2025 Michel Garlandat v1.1</strong><br>Tous droits réservés<br>Images : Wikimedia Commons (licence libre)</p>
+      <div class="settings-claude-badge">✦ &nbsp;Conçu avec Claude · Anthropic</div>
+    </div>
+    <button class="settings-close" onclick="closeSettings()">Fermer</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DONNÉES — PRÉSIDENTS DU SÉNAT
+// ══════════════════════════════════════════════
+const DATA = [
+
+  // ── IIIe RÉPUBLIQUE ──
+  {
+    id:1, name:"Jules Grévy", rep:"IIIe Rép.",
+    debut:1876, fin:1879, actuel:false,
+    parti:"Républicain gauche",
+    wikiTitle:"Jules_Grévy",
+    bio:"Juriste républicain convaincu, Jules Grévy fut le premier président du Sénat de la IIIe République lors de sa création en 1876. Son autorité tranquille et son éloquence sobre lui valurent d'être porté à la Présidence de la République en janvier 1879, devenant ainsi le seul homme à quitter le perchoir du Sénat directement pour l'Élysée.",
+    events:"1er président du Sénat de la IIIe République (1876) · Élu Président de la République (30 jan. 1879) · Son gendre Daniel Wilson déclencha un scandale de décorations"
+  },
+  {
+    id:2, name:"Léon Say", rep:"IIIe Rép.",
+    debut:1879, fin:1882, actuel:false,
+    parti:"Républicain gauche",
+    wikiTitle:"Léon_Say",
+    bio:"Petit-fils de l'économiste Jean-Baptiste Say, Léon Say fut l'un des plus brillants esprits libéraux de la IIIe République. Spécialiste des finances publiques et ardent défenseur du libre-échange, il marqua la présidence du Sénat par sa rigueur intellectuelle et son opposition aux dépenses publiques excessives.",
+    events:"Petit-fils de Jean-Baptiste Say · Directeur des finances de la Ville de Paris · Défenseur du libre-échange · Membre de l'Académie française"
+  },
+  {
+    id:3, name:"Philippe Le Royer", rep:"IIIe Rép.",
+    debut:1882, fin:1893, actuel:false,
+    parti:"Républicain gauche",
+    wikiTitle:"Philippe_Le_Royer",
+    bio:"Magistrat et juriste républicain, Philippe Le Royer présida le Sénat pendant onze ans — le plus long mandat continu de la IIIe République avec Dubost. Ancien ministre de la Justice sous Gambetta, il incarna la stabilité institutionnelle dans une période agitée par les lois laïques de Jules Ferry, le boulangisme et les premières crises de régime.",
+    events:"11 ans à la présidence (1882–1893) · Ancien ministre de la Justice sous Gambetta · Présidence durant les lois Ferry et la crise boulangiste"
+  },
+  {
+    id:4, name:"Antonin Dubost", rep:"IIIe Rép.",
+    debut:1906, fin:1920, actuel:false,
+    parti:"Républicain radical",
+    wikiTitle:"Antonin_Dubost",
+    bio:"Avocat ardéchois et radical convaincu, Antonin Dubost détient le record de longévité à la présidence du Sénat sous la IIIe République avec près de 14 ans au perchoir. Son mandat couvrit intégralement la Grande Guerre, pendant laquelle il assura avec dignité la continuité parlementaire et le soutien à l'Union sacrée.",
+    events:"Record de longévité sous la IIIe : 14 ans · Préside le Sénat pendant toute la Grande Guerre (1914–1918) · Acteur de l'Union sacrée"
+  },
+  {
+    id:5, name:"Léon Bourgeois", rep:"IIIe Rép.",
+    debut:1920, fin:1923, actuel:false,
+    parti:"Républicain radical",
+    wikiTitle:"Léon_Bourgeois",
+    bio:"Figure majeure du radicalisme et du pacifisme, Léon Bourgeois fut l'un des pères fondateurs de la Société des Nations. Couronné du Prix Nobel de la Paix en 1920 — l'année même de son élection à la présidence du Sénat — il incarna la foi dans le droit international comme unique rempart durable contre la guerre.",
+    events:"Prix Nobel de la Paix 1920 · Père fondateur de la Société des Nations · Ancien président du Conseil (1895–1896) · Premier chef de gouvernement radical"
+  },
+  {
+    id:6, name:"Gaston Doumergue", rep:"IIIe Rép.",
+    debut:1923, fin:1924, actuel:false,
+    parti:"Républicain radical",
+    wikiTitle:"Gaston_Doumergue",
+    bio:"Languedocien chaleureux surnommé « Gastounet », Gaston Doumergue ne resta qu'un an à la tête du Sénat avant d'être élu Président de la République en janvier 1924. Premier président de la République issu d'une famille protestante, il fut rappelé au pouvoir en 1934 pour tenter de réformer les institutions après les émeutes du 6 février.",
+    events:"Élu Président de la République (13 jan. 1924) · 1er PR protestant · Rappelé à la tête d'un gouvernement d'union nationale (1934)"
+  },
+  {
+    id:7, name:"Paul Doumer", rep:"IIIe Rép.",
+    debut:1927, fin:1931, actuel:false,
+    parti:"Républicain gauche",
+    wikiTitle:"Paul_Doumer",
+    bio:"Gouverneur général de l'Indochine de 1897 à 1902, où il modernisa profondément l'infrastructure coloniale, Paul Doumer présida le Sénat avec l'autorité d'un homme habitué aux grandes responsabilités. Élu Président de la République en 1931, il fut assassiné dès mai 1932 par l'émigré russe Pavel Gorgulov lors d'une vente de charité.",
+    events:"Gouverneur général de l'Indochine (1897–1902) · Élu Président de la République (1931) · Assassiné par Pavel Gorgulov (6 mai 1932)"
+  },
+  {
+    id:8, name:"Albert Lebrun", rep:"IIIe Rép.",
+    debut:1931, fin:1932, actuel:false,
+    parti:"Alliance républicaine démocratique",
+    wikiTitle:"Albert_Lebrun",
+    bio:"Ingénieur lorrain entré en politique, Albert Lebrun présida brièvement le Sénat avant d'être élu Président de la République en 1932. Il est le dernier président élu sous la IIIe République et le seul à avoir été réélu (1939). Sa présidence s'acheva tragiquement avec la défaite de 1940 et le vote des pleins pouvoirs à Pétain.",
+    events:"Élu Président de la République (1932) · Réélu en 1939 · Dernier PR de la IIIe République · Sa passivité lors du vote de 1940 reste controversée"
+  },
+  {
+    id:9, name:"Jules Jeanneney", rep:"IIIe Rép.",
+    debut:1932, fin:1944, actuel:false,
+    parti:"Républicain gauche",
+    wikiTitle:"Jules_Jeanneney",
+    bio:"Juriste et républicain intransigeant, Jules Jeanneney présida le Sénat pendant douze ans, dont les heures les plus sombres. Lors du vote fatal du 10 juillet 1940, il fut l'un des 80 parlementaires qui refusèrent de déléguer les pleins pouvoirs à Pétain, constituant ainsi le « groupe des 80 » de la résistance légale à Vichy.",
+    events:"L'un des 80 opposants au vote des pleins pouvoirs (10 juil. 1940) · 12 ans à la présidence · Père de Jean-Marcel Jeanneney, ministre de de Gaulle"
+  },
+
+  // ── Ve RÉPUBLIQUE ──
+  {
+    id:10, name:"Gaston Monnerville", rep:"Ve Rép.",
+    debut:1947, fin:1968, actuel:false,
+    parti:"Républicain radical",
+    wikiTitle:"Gaston_Monnerville",
+    bio:"Avocat guyanais de génie, Gaston Monnerville fut le plus long président du Sénat de l'histoire de France avec 21 ans au perchoir. Président du Conseil de la République sous la IVe (1947–1958), puis du Sénat rétabli sous la Ve, il s'opposa frontalement au général de Gaulle lors du référendum de 1962, osant le qualifier de « forfaiture ». Premier homme de couleur à la tête de la deuxième charge de l'État.",
+    events:"21 ans au perchoir (record absolu toutes Républiques) · 1er homme de couleur à la 2e charge de l'État · Osa traiter de Gaulle de « forfaiture » (1962) · Assura deux fois l'intérim de la Présidence"
+  },
+  {
+    id:11, name:"Alain Poher", rep:"Ve Rép.",
+    debut:1968, fin:1992, actuel:false,
+    parti:"Centre démocrate / MRP",
+    wikiTitle:"Alain_Poher",
+    bio:"Démocrate-chrétien breton, Alain Poher est avec 24 ans le deuxième plus long président du Sénat et le seul à avoir exercé deux fois la fonction de Président de la République par intérim : en avril-juin 1969 après la démission du général de Gaulle, puis en avril-mai 1974 après le décès de Pompidou. Candidat malheureux à la présidentielle de 1969, il fut battu par Pompidou au second tour.",
+    events:"24 ans au Sénat · Président de la République par intérim × 2 (1969 et 1974) · Candidat à la présidentielle 1969 (battu par Pompidou)"
+  },
+  {
+    id:12, name:"René Monory", rep:"Ve Rép.",
+    debut:1992, fin:1998, actuel:false,
+    parti:"UDF / Centre-droit",
+    wikiTitle:"René_Monory",
+    bio:"Garagiste viennois devenu homme d'État, René Monory fut à la fois président du Sénat et du Conseil général de la Vienne. Ministre de l'Éducation nationale sous Raymond Barre (1978–1981), il initia la réforme du lycée. Fondateur du Futuroscope, il laissa l'image d'un élu pragmatique, ancré dans son territoire autant qu'ouvert sur l'avenir.",
+    events:"Fondateur du Futuroscope (Vienne) · Ministre de l'Éducation sous Barre (1978–1981) · Sénateur de la Vienne pendant 36 ans"
+  },
+  {
+    id:13, name:"Christian Poncelet", rep:"Ve Rép.",
+    debut:1998, fin:2008, actuel:false,
+    parti:"RPR / UMP",
+    wikiTitle:"Christian_Poncelet",
+    bio:"Gaulliste vosgien irréductible, Christian Poncelet présida le Sénat pendant dix ans. Sénateur des Vosges depuis 1962, il incarna la fidélité au gaullisme originel et la défense des prérogatives du Sénat comme contre-pouvoir républicain. Il laissa le souvenir d'un président attaché aux traditions de la Haute Assemblée et à la coopération décentralisée.",
+    events:"10 ans à la présidence · Gaulliste de la première heure · Sénateur des Vosges de 1962 à 2008 · Défenseur de la coopération décentralisée"
+  },
+  {
+    id:14, name:"Gérard Larcher", rep:"Ve Rép.",
+    debut:2008, fin:2011, actuel:false,
+    parti:"UMP / LR",
+    wikiTitle:"Gérard_Larcher",
+    bio:"Vétérinaire devenu sénateur des Yvelines, Gérard Larcher présida le Sénat pour un premier mandat de 2008 à 2011, interrompu par la victoire de la gauche aux élections sénatoriales. Il retrouva le perchoir dès 2014 après la reconquête de la majorité par la droite, devenant progressivement la figure centrale du Sénat et de la droite républicaine.",
+    events:"1er mandat 2008–2011 · Battu par Jean-Pierre Bel (2011) · Retrouve le perchoir en octobre 2014"
+  },
+  {
+    id:15, name:"Jean-Pierre Bel", rep:"Ve Rép.",
+    debut:2011, fin:2014, actuel:false,
+    parti:"Parti socialiste",
+    wikiTitle:"Jean-Pierre_Bel",
+    bio:"Sénateur de l'Ariège discret mais déterminé, Jean-Pierre Bel fut le premier président socialiste du Sénat sous la Ve République, élu en octobre 2011 après la reconquête de la majorité sénatoriale par la gauche. Parallèlement à la présidence Hollande, il assura une cohabitation institutionnelle inédite. Fidèle à sa parole, il ne brigua pas de second mandat.",
+    events:"1er président socialiste du Sénat sous la Ve Rép. · Élu après la victoire de la gauche (sept. 2011) · Honora sa promesse de ne pas se représenter"
+  },
+  {
+    id:16, name:"Gérard Larcher", rep:"Ve Rép.",
+    debut:2014, fin:null, actuel:true,
+    parti:"Les Républicains",
+    wikiTitle:"Gérard_Larcher",
+    bio:"De retour au perchoir en octobre 2014, Gérard Larcher est désormais le président du Sénat en poste depuis le plus longtemps sous la Ve République. Voix forte de la droite sénatoriale face aux exécutifs successifs — Hollande, Macron, Borne, Attal, Bayrou — il est régulièrement évoqué comme figure présidentiable de la droite républicaine. Sa longévité et son autorité font de lui un acteur incontournable de la vie institutionnelle française.",
+    events:"2e mandat depuis oct. 2014 · Plus long titulaire sous la Ve à ce jour · 2e personnage de l'État · Interlocuteur majeur de tous les exécutifs depuis 2014"
+  }
+];
+
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+const MGA_CONFIG = {
+  appCourante: "senat",
+  apps: [
+    {id:"id6761323546", icon:"⚜️", nom:"Rois de France",              desc:"44 rois de Clovis à Louis-Philippe"},
+    {id:"id6761424444", icon:"🎖", nom:"Présidents de la République", desc:"De 1848 à nos jours"},
+    {id:"id6761334922", icon:"🪶", nom:"Académie française",          desc:"Les 40 Immortels"},
+    {id:"id6760929391", icon:"🎭", nom:"Théâtres Paris",              desc:"39 théâtres parisiens"},
+    {id:"id6761293938", icon:"🎵", nom:"Scènes Paris",                desc:"23 salles de concert"},
+    {id:"id6760890465", icon:"🏛", nom:"Musées de Paris",             desc:"37 musées parisiens"},
+    {id:"id6760751055", icon:"🕊", nom:"Cimetières Paris",            desc:"Personnages célèbres"},
+    {id:"id6760617965", icon:"🍽", nom:"MesRestaurants",              desc:"Vos restaurants favoris"},
+    {id:"id6759219383", icon:"🥦", nom:"Frigo Manager",               desc:"Zéro gaspillage alimentaire"},
+    {id:"id6760126279", icon:"🍷", nom:"Cave Manager",                desc:"Gérez votre cave à vin"},
+    {id:"id6761271324", icon:"💊", nom:"MediSafe-Pharmacie",          desc:"Gestion de pharmacie"}
+  ]
+};
+
+const FILTER_COLORS = {
+  "IIIe Rép.": "#8B5A10",
+  "Ve Rép.":   "#4B1A7A"
+};
+
+const IMG_PREFIX = "senat_img_";
+const IMG_TTL    = 7 * 24 * 60 * 60 * 1000;
+
+let activeFilter = "Tout";
+let searchQuery  = "";
+
+// ── Portrait Wikipedia (JSONP via w/api.php) ──
+function getPortrait(wikiTitle, imgEl) {
+  const key = IMG_PREFIX + wikiTitle;
+  try {
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      const {url, ts} = JSON.parse(cached);
+      if (Date.now() - ts < IMG_TTL) {
+        imgEl.src = url; imgEl.classList.remove("loading"); return;
+      }
+    }
+  } catch(e) {}
+  const cb   = "cb_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+  const s    = document.createElement("script");
+  let   done = false;
+  const cleanup = () => { clearTimeout(t); delete window[cb]; if (s.parentNode) s.remove(); };
+  const t = setTimeout(() => { if (!done) { done=true; cleanup(); } }, 8000);
+  window[cb] = (data) => {
+    if (done) return; done = true; cleanup();
+    try {
+      const pages = data.query && data.query.pages;
+      if (!pages) return;
+      const page = Object.values(pages)[0];
+      const url  = (page.thumbnail && page.thumbnail.source) || null;
+      if (url) {
+        imgEl.src = url; imgEl.classList.remove("loading");
+        try { localStorage.setItem(key, JSON.stringify({url, ts:Date.now()})); } catch(e) {}
+      }
+    } catch(e) {}
+  };
+  s.onerror = () => { if (!done) { done=true; cleanup(); } };
+  s.src = "https://fr.wikipedia.org/w/api.php?action=query"
+        + "&titles=" + encodeURIComponent(wikiTitle)
+        + "&prop=pageimages&pithumbsize=300&format=json&callback=" + cb;
+  document.head.appendChild(s);
+}
+
+// ── Normalise accent ─────────────────────────
+function norm(s) {
+  return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+}
+
+// ── Filtres ──────────────────────────────────
+function buildFilters() {
+  const reps = ["Tout", ...Object.keys(FILTER_COLORS)];
+  const el = document.getElementById("filtersContainer");
+  el.innerHTML = "";
+  reps.forEach(r => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (r === activeFilter ? " active" : "");
+    btn.textContent = r;
+    if (r === "Tout") {
+      if (r === activeFilter) btn.style.background = "rgba(201,153,58,0.35)";
+    } else {
+      const col = FILTER_COLORS[r];
+      if (r === activeFilter) btn.style.background = col;
+      else btn.style.borderColor = col + "55";
+    }
+    btn.onclick = () => { activeFilter = r; buildFilters(); renderList(); };
+    el.appendChild(btn);
+  });
+}
+
+// ── Rendu liste ──────────────────────────────
+function renderList() {
+  const q = norm(searchQuery);
+  const list = DATA.filter(p => {
+    if (activeFilter !== "Tout" && p.rep !== activeFilter) return false;
+    if (q && !norm(p.name).includes(q) && !norm(p.parti).includes(q)) return false;
+    return true;
+  });
+  const el    = document.getElementById("cardsList");
+  const count = document.getElementById("counter");
+  count.textContent = list.length + " président" + (list.length > 1 ? "s" : "");
+  el.innerHTML = "";
+  list.forEach(p => {
+    const col      = FILTER_COLORS[p.rep] || "#555";
+    const finLabel = p.actuel ? "en poste" : (p.fin || "");
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img class="card-img loading" id="ci_${p.id}" src="" alt="${p.name}">
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-dates">${p.debut} – ${finLabel}</div>
+        <div class="card-party">${p.parti}</div>
+        <div class="card-badges">
+          <span class="badge-rep" style="background:${col}">${p.rep}</span>
+          ${p.actuel ? '<span class="badge-actuel">En poste</span>' : ""}
+        </div>
+      </div>`;
+    card.onclick = () => openModal(p);
+    el.appendChild(card);
+    getPortrait(p.wikiTitle, document.getElementById("ci_" + p.id));
+  });
+}
+
+// ── Modal ────────────────────────────────────
+function openModal(p) {
+  const col      = FILTER_COLORS[p.rep] || "#555";
+  const finLabel = p.actuel ? "en poste" : (p.fin || "");
+  const years    = p.actuel ? (2026 - p.debut) : (p.fin - p.debut);
+  document.getElementById("modalName").textContent  = p.name;
+  document.getElementById("modalSub").innerHTML     = `<span style="color:${col}">${p.rep}</span>${p.actuel ? ' · <span style="color:#7FD49B">En poste</span>' : ""}`;
+  document.getElementById("modalMandat").textContent = `${p.debut} – ${finLabel} (${years} an${years>1?"s":""})`;
+  document.getElementById("modalParti").textContent  = p.parti;
+  document.getElementById("modalBio").textContent    = p.bio;
+  document.getElementById("modalEvents").innerHTML   = p.events.split(" · ").map(e=>"• "+e).join("<br>");
+  const portrait = document.getElementById("modalPortrait");
+  portrait.src = ""; portrait.classList.add("loading");
+  getPortrait(p.wikiTitle, portrait);
+  document.getElementById("modalOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// ── Settings ─────────────────────────────────
+function buildSettings() {
+  const el   = document.getElementById("settingsContent");
+  const apps = MGA_CONFIG.apps.filter(a => a.id !== MGA_CONFIG.appCourante);
+  el.innerHTML = `<div class="settings-section"><div class="settings-section-title">Nos autres applications</div>`;
+  apps.forEach((app, i) => {
+    el.innerHTML += `
+      <div class="app-row" onclick="openAppStore('${app.id}')">
+        <div class="app-row-icon">${app.icon}</div>
+        <div class="app-row-info">
+          <div class="app-row-name">${app.nom}</div>
+          <div class="app-row-desc">${app.desc}</div>
+        </div>
+        <div class="app-row-arrow">›</div>
+      </div>${i < apps.length-1 ? '<div class="settings-divider"></div>' : ""}`;
+  });
+  el.innerHTML += `</div>`;
+}
+function openAppStore(appId) {
+  window.open("https://apps.apple.com/fr/app/" + appId, "_blank");
+}
+function closeSettings() {
+  document.getElementById("settingsOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// ── Events ───────────────────────────────────
+document.getElementById("searchInput").addEventListener("input", function() {
+  searchQuery = this.value;
+  document.getElementById("searchClear").style.display = searchQuery ? "block" : "none";
+  renderList();
+});
+document.getElementById("searchClear").onclick = () => {
+  document.getElementById("searchInput").value = "";
+  searchQuery = "";
+  document.getElementById("searchClear").style.display = "none";
+  renderList();
+};
+document.getElementById("modalOverlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("modalOverlay")) closeModal();
+});
+document.getElementById("modalHandle").onclick = closeModal;
+document.getElementById("modalClose").onclick   = closeModal;
+document.getElementById("settingsOverlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("settingsOverlay")) closeSettings();
+});
+document.getElementById("settingsBtn").onclick = () => {
+  document.getElementById("settingsOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+};
+
+// ── Tabs ─────────────────────────────────────
+function switchTab(tab) {
+  const liste = document.getElementById("listeView");
+  const quiz  = document.getElementById("quizView");
+  const tl    = document.getElementById("tabListe");
+  const tq    = document.getElementById("tabQuiz");
+  const hdr   = document.querySelector("header");
+  if (tab === "liste") {
+    liste.style.display = "block"; quiz.style.display = "none";
+    hdr.style.display = "block";
+    tl.classList.add("active"); tq.classList.remove("active");
+  } else {
+    liste.style.display = "none"; quiz.style.display = "block";
+    hdr.style.display = "none";
+    tq.classList.add("active"); tl.classList.remove("active");
+    showQuizHome();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  QUIZ ENGINE
+// ══════════════════════════════════════════════
+let quizQuestions = [];
+let quizIndex = 0, quizScore = 0, quizAnswered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function pickWrong(correct, pool, n) {
+  return shuffle(pool.filter(x => x !== correct)).slice(0, n);
+}
+
+function generateQuestions(mode) {
+  const pool = mode==='r3' ? DATA.filter(p=>p.rep==='IIIe Rép.')
+             : mode==='ve' ? DATA.filter(p=>p.rep==='Ve Rép.')
+             : DATA;
+  const names  = DATA.map(p=>p.name);
+  const partis = [...new Set(DATA.map(d=>d.parti))];
+  const reps   = Object.keys(FILTER_COLORS);
+  const templates = [];
+
+  pool.forEach(p => {
+    const finLabel = p.actuel ? 'en poste' : p.fin;
+    templates.push({
+      q:`Qui a présidé le Sénat de ${p.debut} à ${finLabel} ?`,
+      correct:p.name, wrong:pickWrong(p.name,names,3),
+      wikiTitle:p.wikiTitle,
+      explication:`${p.name} (${p.debut}–${finLabel}), ${p.parti}.`
+    });
+    templates.push({
+      q:`À quelle période appartient ${p.name} ?`,
+      correct:p.rep, wrong:shuffle(reps.filter(r=>r!==p.rep)).slice(0,3),
+      explication:`${p.name} a présidé le Sénat sous la ${p.rep}.`
+    });
+    templates.push({
+      q:`Quel était le parti de ${p.name} ?`,
+      correct:p.parti, wrong:pickWrong(p.parti,partis,3),
+      explication:`${p.name} appartenait au courant : ${p.parti}.`
+    });
+    const yr = p.debut + Math.floor(((( p.fin||2026)-p.debut)*0.4));
+    templates.push({
+      q:`Qui était président du Sénat en ${yr} ?`,
+      correct:p.name, wrong:pickWrong(p.name,names,3),
+      wikiTitle:p.wikiTitle,
+      explication:`En ${yr}, ${p.name} présidait la Haute Assemblée.`
+    });
+  });
+  return shuffle(templates).slice(0,20);
+}
+
+function showQuizHome() {
+  document.getElementById("quizHome").style.display="block";
+  document.getElementById("quizQuestion").style.display="none";
+  document.getElementById("quizResult").style.display="none";
+}
+
+function startQuiz(mode) {
+  quizQuestions=generateQuestions(mode);
+  quizIndex=0; quizScore=0;
+  document.getElementById("quizHome").style.display="none";
+  document.getElementById("quizResult").style.display="none";
+  document.getElementById("quizQuestion").style.display="block";
+  showQuestion();
+}
+
+function showQuestion() {
+  quizAnswered=false;
+  const q=quizQuestions[quizIndex], tot=quizQuestions.length;
+  document.getElementById("qNum").textContent=`Question ${quizIndex+1} / ${tot}`;
+  document.getElementById("qScore").textContent=`${quizScore} / ${quizIndex}`;
+  document.getElementById("qProgress").style.width=(quizIndex/tot*100)+"%";
+  document.getElementById("qText").textContent=q.q;
+  document.getElementById("qFeedback").style.display="none";
+  document.getElementById("qFeedback").className="quiz-feedback";
+  document.getElementById("qNext").style.display="none";
+  const pw=document.getElementById("qPortraitWrap");
+  if(q.wikiTitle){
+    pw.style.display="block";
+    const img=document.getElementById("qPortrait");
+    img.src=""; img.className="quiz-portrait loading";
+    getPortrait(q.wikiTitle,img);
+  } else { pw.style.display="none"; }
+  const answers=shuffle([q.correct,...q.wrong]);
+  const el=document.getElementById("qAnswers");
+  el.innerHTML="";
+  answers.forEach(ans=>{
+    const btn=document.createElement("button");
+    btn.className="quiz-ans-btn"; btn.textContent=ans;
+    btn.onclick=()=>answerQuiz(ans,q,btn);
+    el.appendChild(btn);
+  });
+}
+
+function answerQuiz(chosen,q,chosenBtn) {
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const correct=chosen===q.correct;
+  if(correct) quizScore++;
+  document.querySelectorAll(".quiz-ans-btn").forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.correct) b.classList.add("reveal");
+  });
+  chosenBtn.classList.remove("reveal");
+  chosenBtn.classList.add(correct?"correct":"wrong");
+  if(!correct) {
+    document.querySelectorAll(".quiz-ans-btn").forEach(b=>{
+      if(b.textContent===q.correct){b.classList.remove("reveal");b.classList.add("correct");}
+    });
+  }
+  const fb=document.getElementById("qFeedback");
+  fb.style.display="block";
+  fb.className="quiz-feedback "+(correct?"correct":"wrong");
+  fb.textContent=(correct?"✓ Correct ! ":"✗ Inexact. ")+q.explication;
+  document.getElementById("qScore").textContent=`${quizScore} / ${quizIndex+1}`;
+  const nextBtn=document.getElementById("qNext");
+  nextBtn.style.display="block";
+  nextBtn.textContent=quizIndex===quizQuestions.length-1?"Voir le résultat →":"Question suivante →";
+}
+
+function nextQuestion() {
+  quizIndex++;
+  if(quizIndex>=quizQuestions.length) showResult();
+  else showQuestion();
+}
+
+function showResult() {
+  document.getElementById("quizQuestion").style.display="none";
+  document.getElementById("quizResult").style.display="block";
+  const tot=quizQuestions.length, pct=Math.round(quizScore/tot*100);
+  const icon=pct>=80?"🏆":pct>=60?"🎖":pct>=40?"📜":"🏛";
+  const title=pct>=80?"Excellent !":pct>=60?"Bien joué !":pct>=40?"Pas mal…":"À retravailler";
+  const sub=pct>=80?"Vous maîtrisez l'histoire du Sénat !"
+           :pct>=60?"Bonne connaissance des présidents."
+           :pct>=40?"Relisez les biographies pour progresser."
+           :"Explorez la liste pour mieux les connaître.";
+  document.getElementById("rIcon").textContent=icon;
+  document.getElementById("rTitle").textContent=title;
+  document.getElementById("rScore").textContent=`${quizScore} / ${tot}`;
+  document.getElementById("rSub").textContent=sub;
+  document.getElementById("qProgress").style.width="100%";
+}
+
+// ── Init ─────────────────────────────────────
+buildFilters();
+buildSettings();
+renderList();
+</script>
+</body>
+</html>
